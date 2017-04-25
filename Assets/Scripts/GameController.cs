@@ -15,7 +15,14 @@ public class GameController : MonoBehaviour {
     public GameObject obstaculo;
     public float espera;
     public float tempoDestruicao;
+
     public Text txtPontos;
+    public Text txtMaiorPontuacao;
+
+    public GameObject gameOverPanel;
+    public GameObject pontosPanel;
+    
+
 
 
     public static GameController instancia = null;
@@ -32,6 +39,11 @@ public class GameController : MonoBehaviour {
 
     void Start() {
         estado = Estado.AguardoComecar;
+        PlayerPrefs.SetInt("HighScore", 0);
+        menuCamera.SetActive(true);
+        menuPanel.SetActive(true);
+        gameOverPanel.SetActive(false);
+        pontosPanel.SetActive(false);
     }
 
     IEnumerator GerarObstaculos() {
@@ -47,6 +59,7 @@ public class GameController : MonoBehaviour {
         estado = Estado.Jogando;
         menuCamera.SetActive(false);
         menuPanel.SetActive(false);
+        pontosPanel.SetActive(true);
         atualizarPontos(0);
         StartCoroutine(GerarObstaculos());
     }
@@ -54,6 +67,11 @@ public class GameController : MonoBehaviour {
 
     public void PlayerMorreu() {
         estado = Estado.GameOver;
+        if (pontos > PlayerPrefs.GetInt("HighScore")) {
+            PlayerPrefs.SetInt("HighScore", pontos);
+            txtMaiorPontuacao.text = "" + pontos;
+        }
+        gameOverPanel.SetActive(true);
     }
 
     private void atualizarPontos(int x) {
@@ -65,4 +83,12 @@ public class GameController : MonoBehaviour {
         atualizarPontos(pontos + x);
     }
 
+    public void PlayerVoltou() {
+        estado = Estado.AguardoComecar;
+        menuCamera.SetActive(true);
+        menuPanel.SetActive(true);
+        gameOverPanel.SetActive(false);
+        pontosPanel.SetActive(false);
+        GameObject.Find("micro_zombie_mobile").GetComponent<PlayerController>().recomecar();
+    }
 }
