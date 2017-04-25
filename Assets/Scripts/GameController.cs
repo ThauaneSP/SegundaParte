@@ -21,7 +21,6 @@ public class GameController : MonoBehaviour {
 
     public GameObject gameOverPanel;
     public GameObject pontosPanel;
-    
 
 
 
@@ -72,6 +71,7 @@ public class GameController : MonoBehaviour {
             txtMaiorPontuacao.text = "" + pontos;
         }
         gameOverPanel.SetActive(true);
+
     }
 
     private void atualizarPontos(int x) {
@@ -82,7 +82,6 @@ public class GameController : MonoBehaviour {
     public void incrementarPontos(int x) {
         atualizarPontos(pontos + x);
     }
-
     public void PlayerVoltou() {
         estado = Estado.AguardoComecar;
         menuCamera.SetActive(true);
