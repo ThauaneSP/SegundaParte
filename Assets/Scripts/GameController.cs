@@ -1,7 +1,11 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
+
+    private int pontos;
+
 
     public GameObject menuCamera;
     public GameObject menuPanel;
@@ -11,6 +15,8 @@ public class GameController : MonoBehaviour {
     public GameObject obstaculo;
     public float espera;
     public float tempoDestruicao;
+    public Text txtPontos;
+
 
     public static GameController instancia = null;
 
@@ -24,27 +30,39 @@ public class GameController : MonoBehaviour {
         DontDestroyOnLoad(gameObject);
     }
 
-	void Start () {
+    void Start() {
         estado = Estado.AguardoComecar;
-	}
-	
-	IEnumerator GerarObstaculos() {
+    }
+
+    IEnumerator GerarObstaculos() {
         while (GameController.instancia.estado == Estado.Jogando) {
             Vector3 pos = new Vector3(7.7f, Random.Range(1f, 5f), 0f);
             GameObject obj = Instantiate(obstaculo, pos, Quaternion.identity) as GameObject;
             Destroy(obj, tempoDestruicao);
             yield return new WaitForSeconds(espera);
         }
-	}
+    }
 
     public void PlayerComecou() {
         estado = Estado.Jogando;
         menuCamera.SetActive(false);
         menuPanel.SetActive(false);
+        atualizarPontos(0);
         StartCoroutine(GerarObstaculos());
     }
+
 
     public void PlayerMorreu() {
         estado = Estado.GameOver;
     }
+
+    private void atualizarPontos(int x) {
+        pontos = x;
+        txtPontos.text = "" + x;
+    }
+
+    public void incrementarPontos(int x) {
+        atualizarPontos(pontos + x);
+    }
+
 }

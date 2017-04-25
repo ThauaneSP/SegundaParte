@@ -10,14 +10,24 @@ public class GosmaMove : MonoBehaviour {
     public float max;
     public float espera;
 
+    private GameObject player;
+    private bool pontuou = false;
+
+
     void Start () {
         StartCoroutine(Move(min));
 	}
-	
-	void Update () {
+
+    void Update() {
         Vector3 velocidadeVetorial = Vector3.left * velocidadeHorizontal;
         transform.position = transform.position + velocidadeVetorial * Time.deltaTime;
-	}
+        if (!pontuou && GameController.instancia.estado == Estado.Jogando) {
+            if (transform.position.x < player.transform.position.x) {
+                GameController.instancia.incrementarPontos(1);
+                pontuou = true;
+            }
+        }
+    }
 
     IEnumerator Move(float destino) {
         while (Mathf.Abs(destino - transform.position.y) > 0.2f) {
@@ -31,5 +41,9 @@ public class GosmaMove : MonoBehaviour {
 
         destino = (destino == max) ? min : max;
         StartCoroutine(Move(destino));
+    }
+
+    private void Awake() {
+        player = GameObject.Find("Player");
     }
 }
